@@ -6,20 +6,37 @@
  */
 
 class Game {
-	constructor(height, width) {
+	constructor(p1, p2, height = 6, width = 7) {
+		function isColor(strColor) {
+			const option = new Option().style;
+			option.color = strColor;
+			return option.color === strColor;
+		}
+		if (isColor(p1.color) && isColor(p2.color)) {
+			this.p1 = p1;
+			this.p2 = p2;
+			document.querySelector('#footer').innerText = '';
+		} else {
+			document.querySelector('#footer').innerText =
+				'Please enter a valid color!';
+			throw new Error('Invalid Color');
+		}
+
 		this.WIDTH = width;
 		this.HEIGHT = height;
-		this.currPlayer = 1; // active player: 1 or 2
-		this.board = []; // array of rows, each row is array of cells  (board[y][x])
+		this.currPlayer = this.p1; // active player: 1 or 2
+		this.board = [];
+		this.htmlBoard = ''; // array of rows, each row is array of cells  (board[y][x])
 		this.makeBoard();
 		this.makeHtmlBoard();
+		this.gameOver = true;
 	}
 	/** makeBoard: create in-JS board structure:
     *   board = array of rows, each row is array of cells  (board[y][x])
     */
 
 	makeBoard() {
-		console.log('making board');
+		this.board = [];
 		for (let y = 0; y < this.HEIGHT; y++) {
 			this.board.push(Array.from({ length: this.WIDTH }));
 		}
@@ -27,8 +44,8 @@ class Game {
 
 	/** makeHtmlBoard: make HTML table and row of column tops. */
 	makeHtmlBoard() {
-		console.log('making HTML board');
-		const board = document.getElementById('board');
+		this.htmlBoard = document.getElementById('board');
+		this.htmlBoard.innerHTML = '';
 
 		// make column tops (clickable area for adding a piece to that column)
 		const top = document.createElement('tr');
@@ -43,7 +60,7 @@ class Game {
 			top.append(headCell);
 		}
 
-		board.append(top);
+		this.htmlBoard.append(top);
 
 		// make main part of board
 		for (let y = 0; y < this.HEIGHT; y++) {
@@ -55,16 +72,21 @@ class Game {
 				row.append(cell);
 			}
 
-			board.append(row);
+			this.htmlBoard.append(row);
 		}
+	}
+
+	// Validate legal color
+	isColor(strColor) {
+		const option = new Option().style;
+		option.color = strColor;
+		return option.color === strColor;
 	}
 
 	/** findSpotForCol: given column x, return top empty y (null if filled) */
 	findSpotForCol(x) {
 		for (let y = this.HEIGHT - 1; y >= 0; y--) {
-			if (!this.board[y][x]) {
-				return y;
-			}
+			if (!this.board[y][x]) return y;
 		}
 		return null;
 	}
@@ -73,15 +95,23 @@ class Game {
 	placeInTable(y, x) {
 		const piece = document.createElement('div');
 		piece.classList.add('piece');
-		piece.classList.add(`p${this.currPlayer}`);
+		piece.style.backgroundColor = this.currPlayer.color;
+		// piece.classList.add(`p${this.currPlayer}`);
 		piece.style.top = -50 * (y + 2);
 
 		const spot = document.getElementById(`${y}-${x}`);
 		spot.append(piece);
 	}
 
+	startGame() {
+		this.makeBoard();
+		this.makeHtmlBoard();
+	}
+
 	/** endGame: announce game end */
 	endGame(msg) {
+		const top = document.querySelector('#column-top');
+		top.removeEventListener('click', this.bindGameClick);
 		alert(msg);
 	}
 
@@ -102,7 +132,7 @@ class Game {
 
 		// check for win
 		if (this.checkForWin()) {
-			return this.endGame(`Player ${this.currPlayer} won!`);
+			return this.endGame(`The ${this.currPlayer.color} player  won!`);
 		}
 
 		// check for tie
@@ -111,7 +141,9 @@ class Game {
 		}
 
 		// switch players
-		this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+		this.currPlayer === this.p1
+			? (this.currPlayer = this.p2)
+			: (this.currPlayer = this.p1);
 	}
 
 	/** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -164,6 +196,15 @@ class Game {
 	}
 }
 
-new Game(6, 7);
-// makeBoard();
-// makeHtmlBoard();
+class Player {
+	constructor(color) {
+		this.color = color;
+	}
+}
+
+document.querySelector('#reset').addEventListener('click', (e) => {
+	e.preventDefault();
+	let p1 = new Player(document.querySelector('#p1color').value);
+	let p2 = new Player(document.querySelector('#p2color').value);
+	new Game(p1, p2);
+});
