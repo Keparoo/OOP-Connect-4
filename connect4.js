@@ -7,18 +7,19 @@
 
 class Game {
 	constructor(p1, p2, height = 6, width = 7) {
-		function isColor(strColor) {
+		const isColor = (strColor) => {
 			const option = new Option().style;
 			option.color = strColor;
 			return option.color === strColor;
-		}
-		if (isColor(p1.color) && isColor(p2.color)) {
+		};
+		// Check both colors are valid different colors
+		if (isColor(p1.color) && isColor(p2.color) && p1.color !== p2.color) {
 			this.p1 = p1;
 			this.p2 = p2;
 			document.querySelector('#footer').innerText = '';
 		} else {
 			document.querySelector('#footer').innerText =
-				'Please enter a valid color!';
+				'Please 2 valid different colors!';
 			throw new Error('Invalid Color');
 		}
 
