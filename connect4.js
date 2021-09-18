@@ -30,7 +30,7 @@ class Game {
 		this.htmlBoard = ''; // array of rows, each row is array of cells  (board[y][x])
 		this.makeBoard();
 		this.makeHtmlBoard();
-		this.gameOver = true;
+		this.gameOver = false;
 	}
 	/** makeBoard: create in-JS board structure:
     *   board = array of rows, each row is array of cells  (board[y][x])
@@ -113,7 +113,8 @@ class Game {
 	endGame(msg) {
 		const top = document.querySelector('#column-top');
 		top.removeEventListener('click', this.bindGameClick);
-		alert(msg);
+		this.gameOver = true;
+		document.querySelector('#footer').innerText = msg;
 	}
 
 	/** handleClick: handle click of column top to play piece */
