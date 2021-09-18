@@ -203,8 +203,7 @@ class Player {
 	}
 }
 
-document.querySelector('#reset').addEventListener('click', (e) => {
-	e.preventDefault();
+document.querySelector('#reset').addEventListener('click', () => {
 	let p1 = new Player(document.querySelector('#p1color').value);
 	let p2 = new Player(document.querySelector('#p2color').value);
 	new Game(p1, p2);
