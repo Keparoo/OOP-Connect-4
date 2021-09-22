@@ -104,11 +104,6 @@ class Game {
 		spot.append(piece);
 	}
 
-	// startGame() {
-	// 	this.makeBoard();
-	// 	this.makeHtmlBoard();
-	// }
-
 	/** endGame: announce game end */
 	endGame(msg) {
 		const top = document.querySelector('#column-top');
