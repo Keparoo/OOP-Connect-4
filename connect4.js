@@ -104,10 +104,10 @@ class Game {
 		spot.append(piece);
 	}
 
-	startGame() {
-		this.makeBoard();
-		this.makeHtmlBoard();
-	}
+	// startGame() {
+	// 	this.makeBoard();
+	// 	this.makeHtmlBoard();
+	// }
 
 	/** endGame: announce game end */
 	endGame(msg) {
